@@ -1,6 +1,22 @@
 version: "3.9"
 
 services:
+  zookeeper:
+    image: zookeeper
+    ports:
+      - 2181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka
+    ports:
+      - 9092:9092
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=192.168.0.50:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://192.168.0.50:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    depends_on:
+      - zookeeper
+
   admin-service:
     container_name: admin-service
     build: ./admin-service
@@ -8,6 +24,8 @@ services:
       - "8001:8001"
     volumes:
       - ./app:/app
+    depends_on:
+      - kafka
 
   producer-service:
     container_name: producer-service
@@ -16,6 +34,8 @@ services:
       - "8002:8002"
     volumes:
       - ./app:/app
+    depends_on:
+      - kafka
 
   consumer-service:
     container_name: consumer-service
@@ -24,3 +44,5 @@ services:
       - "8003:8003"
     volumes:
       - ./app:/app
+    depends_on:
+      - kafka
