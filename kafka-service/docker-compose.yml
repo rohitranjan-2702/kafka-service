@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  admin-service:
+    container_name: admin-service
+    build: ./admin-service
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./app:/app
+
+  producer-service:
+    container_name: producer-service
+    build: ./producer-service
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./app:/app
+
+  consumer-service:
+    container_name: consumer-service
+    build: ./consumer-service
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./app:/app
